@@ -1,0 +1,13 @@
+<header class="ih-header">
+  <div class="logo" (click)="home()">
+    <mat-icon>support_agent</mat-icon>
+    <span>IntegraHelp</span>
+  </div>
+  <div class="user-info">
+    <span class="role-badge">{{ user?.role }}</span>
+    <span>{{ user?.fullName }}</span>
+    <button mat-icon-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</header>

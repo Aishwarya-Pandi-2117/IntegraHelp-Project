@@ -1,0 +1,27 @@
+<div class="ih-layout">
+  <app-header></app-header>
+  <div class="ih-content">
+    <div class="hero">
+      <h1>Welcome, {{ user?.fullName }}</h1>
+      <p>Select a department to raise a complaint</p>
+    </div>
+    <div class="dept-grid">
+      <div class="dept-card" *ngFor="let d of departments"
+           (click)="selectDept(d)">
+        <mat-icon>{{ d.icon }}</mat-icon>
+        <h3>{{ d.name }}</h3>
+        <p>{{ d.description }}</p>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button mat-raised-button color="accent"
+        *ngIf="!isGuest() && !isAdmin()" (click)="goMyTickets()">
+        My Tickets
+      </button>
+      <button mat-raised-button color="primary"
+        *ngIf="isAdmin()" (click)="goAdmin()">
+        Admin Dashboard
+      </button>
+    </div>
+  </div>
+</div>

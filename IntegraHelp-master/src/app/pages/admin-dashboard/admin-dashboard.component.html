@@ -1,0 +1,36 @@
+<div class="ih-layout"><app-header></app-header>
+<div class="ih-content">
+  <div class="dash-header">
+    <h2>Admin Dashboard — {{ user?.departmentName || "All Departments" }}</h2>
+    <div class="filters">
+      <button mat-button [class.active]="filterStatus==='ALL'"
+        (click)="filterStatus='ALL'; applyFilter()">All</button>
+      <button mat-button [class.active]="filterStatus==='SUBMITTED'"
+        (click)="filterStatus='SUBMITTED'; applyFilter()">Submitted</button>
+      <button mat-button [class.active]="filterStatus==='IN_PROGRESS'"
+        (click)="filterStatus='IN_PROGRESS'; applyFilter()">In Progress</button>
+      <button mat-button [class.active]="filterStatus==='RESOLVED'"
+        (click)="filterStatus='RESOLVED'; applyFilter()">Resolved</button>
+    </div>
+  </div>
+  <div class="ticket-list">
+    <mat-card *ngFor="let t of filtered" class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-no">{{ t.ticketNumber }}</span>
+        <app-status-badge [status]="t.status"></app-status-badge>
+      </div>
+      <h4>{{ t.issueType }}</h4>
+      <p>{{ t.departmentName }} | Raised by: {{ t.raisedBy }}</p>
+      <p>{{ t.description }}</p>
+      <div class="ticket-actions">
+        <button mat-stroked-button color="primary"
+          *ngIf="t.status === 'SUBMITTED'"
+          (click)="updateStatus(t, 'IN_PROGRESS')">Mark In Progress</button>
+        <button mat-raised-button color="primary"
+          *ngIf="t.status === 'IN_PROGRESS'"
+          (click)="updateStatus(t, 'RESOLVED')">Mark Resolved</button>
+      </div>
+    </mat-card>
+    <p *ngIf="filtered.length === 0" class="empty">No tickets found.</p>
+  </div>
+</div></div>

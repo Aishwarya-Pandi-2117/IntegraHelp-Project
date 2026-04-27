@@ -1,0 +1,47 @@
+<div class="ih-layout"><app-header></app-header>
+<div class="ih-content">
+  <h2>Raise a Ticket — {{ deptName }}</h2>
+  <mat-card class="ticket-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Issue Type</mat-label>
+      <mat-select [(ngModel)]="selectedIssue" (ngModelChange)="onIssueChange()">
+        <mat-option *ngFor="let t of issueTypes" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngFor="let f of dynamicFields">
+      <mat-form-field appearance="outline" class="full-width" *ngIf="f.type !== 'SELECT'">
+        <mat-label>{{ f.label }}</mat-label>
+        <input matInput [type]="f.type === 'NUMBER' ? 'number' : 'text'"
+          [(ngModel)]="fieldValues[f.name]" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width" *ngIf="f.type === 'SELECT'">
+        <mat-label>{{ f.label }}</mat-label>
+        <mat-select [(ngModel)]="fieldValues[f.name]">
+          <mat-option *ngFor="let o of f.options" [value]="o">{{ o }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="4" [(ngModel)]="description"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Priority</mat-label>
+      <mat-select [(ngModel)]="priority">
+        <mat-option value="LOW">Low</mat-option>
+        <mat-option value="MEDIUM">Medium</mat-option>
+        <mat-option value="HIGH">High</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="anon-toggle" *ngIf="!isGuest">
+      <label>
+        <input type="checkbox" [(ngModel)]="anonymous" />
+        Submit Anonymously (for ethics complaints)
+      </label>
+    </div>
+    <button mat-raised-button color="primary" (click)="submit()"
+      [disabled]="!selectedIssue || loading">
+      {{ loading ? "Submitting..." : "Submit Ticket" }}
+    </button>
+  </mat-card>
+</div></div>

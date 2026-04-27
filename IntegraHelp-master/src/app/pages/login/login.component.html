@@ -1,0 +1,27 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="brand">
+      <mat-icon>support_agent</mat-icon>
+      <h1>IntegraHelp</h1>
+      <p>Smart Complaint Management</p>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="login()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit"
+        [disabled]="loading" class="full-width">
+        {{ loading ? "Signing in..." : "Sign In" }}
+      </button>
+    </form>
+    <div class="divider">or</div>
+    <button mat-stroked-button (click)="guestLogin()" class="full-width guest-btn">
+      <mat-icon>visibility_off</mat-icon> Continue Anonymously
+    </button>
+  </div>
+</div>

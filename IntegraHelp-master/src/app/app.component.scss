@@ -1,0 +1,16 @@
+.app-shell {
+  display: flex;
+  height: 100vh;
+  
+  &.with-sidebar {
+    .main-area {
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
+  
+  .main-area {
+    width: 100%;
+    overflow-y: auto;
+  }
+}

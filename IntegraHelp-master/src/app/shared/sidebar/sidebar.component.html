@@ -1,0 +1,56 @@
+<nav class="ih-sidebar">
+
+  <!-- Logo / Brand at top -->
+  <div class="sidebar-brand">
+    <mat-icon class="brand-icon">support_agent</mat-icon>
+    <div class="brand-text">
+      <span class="brand-name">IntegraHelp</span>
+      <span class="brand-sub">Complaint Portal</span>
+    </div>
+  </div>
+
+  <!-- User Profile Card -->
+  <div class="sidebar-profile">
+    <div class="avatar" [style.background-color]="getRoleBadgeColor()">
+      {{ initials }}
+    </div>
+    <div class="profile-info">
+      <span class="profile-name">{{ user?.fullName }}</span>
+      <span class="profile-role"
+            [style.background-color]="getRoleBadgeColor()">
+        {{ user?.role }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Department badge (shown only for admins) -->
+  <div class="dept-badge" *ngIf="user?.departmentName">
+    <mat-icon>business</mat-icon>
+    <span>{{ user?.departmentName }}</span>
+  </div>
+
+  <!-- Navigation Links -->
+  <ul class="nav-list">
+    <li
+      *ngFor="let item of visibleItems"
+      class="nav-item"
+      [class.active]="isActive(item.route)"
+      (click)="navigate(item.route)">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span>{{ item.label }}</span>
+    </li>
+  </ul>
+
+  <!-- Spacer pushes logout to bottom -->
+  <div class="spacer"></div>
+
+  <!-- Logout -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Sign Out</span>
+    </button>
+    <p class="version">v1.0.0</p>
+  </div>
+
+</nav>

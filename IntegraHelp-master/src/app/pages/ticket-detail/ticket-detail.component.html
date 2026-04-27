@@ -1,0 +1,160 @@
+<div class="ih-content">
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="center-loader">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading ticket...</p>
+  </div>
+
+  <!-- Main ticket view -->
+  <div *ngIf="!loading && ticket">
+
+    <!-- Back button + heading -->
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h2 class="ticket-title">{{ ticket.issueType }}</h2>
+        <span class="ticket-no-label">{{ ticket.ticketNumber }}</span>
+      </div>
+      <app-status-badge [status]="ticket.status"></app-status-badge>
+    </div>
+
+    <!-- ─── Status Progress Stepper ─────────────────── -->
+    <mat-card class="stepper-card">
+      <h4>Progress</h4>
+      <div class="stepper">
+        <ng-container *ngFor="let step of statusSteps; let i = index">
+          <!-- Step circle -->
+          <div class="step-item"
+               [class.done]="isStepDone(i)"
+               [class.active]="isStepActive(i)">
+            <div class="step-circle">
+              <mat-icon *ngIf="isStepDone(i)">check</mat-icon>
+              <mat-icon *ngIf="!isStepDone(i)">{{ step.icon }}</mat-icon>
+            </div>
+            <span class="step-label">{{ step.label }}</span>
+          </div>
+          <!-- Connector line between steps -->
+          <div class="step-line"
+               *ngIf="i < statusSteps.length - 1"
+               [class.done]="isStepDone(i)">
+          </div>
+        </ng-container>
+      </div>
+    </mat-card>
+
+    <!-- ─── Admin Action Buttons ─────────────────────── -->
+    <div class="admin-actions" *ngIf="isAdmin()">
+      <button mat-raised-button color="accent"
+        *ngIf="canMarkInProgress()"
+        [disabled]="updatingStatus"
+        (click)="updateStatus('IN_PROGRESS')">
+        <mat-icon>engineering</mat-icon>
+        Mark In Progress
+      </button>
+      <button mat-raised-button color="primary"
+        *ngIf="canMarkResolved()"
+        [disabled]="updatingStatus"
+        (click)="updateStatus('RESOLVED')">
+        <mat-icon>check_circle</mat-icon>
+        Mark as Resolved
+      </button>
+      <mat-spinner *ngIf="updatingStatus" diameter="24"></mat-spinner>
+    </div>
+
+    <!-- ─── Ticket Info Cards ────────────────────────── -->
+    <div class="info-grid">
+
+      <!-- Left: Core details -->
+      <mat-card class="info-card">
+        <h4>Ticket Details</h4>
+        <div class="info-row">
+          <span class="label">Department</span>
+          <span class="value">{{ ticket.departmentName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Issue Type</span>
+          <span class="value">{{ ticket.issueType }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Priority</span>
+          <span class="value priority-dot"
+            [style.color]="getPriorityColor(ticket.priority)">
+            ● {{ ticket.priority }}
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">Raised By</span>
+          <span class="value">
+            <mat-icon *ngIf="ticket.anonymous" class="anon-icon">
+              visibility_off
+            </mat-icon>
+            {{ ticket.raisedBy }}
+          </span>
+        </div>
+        <div class="info-row" *ngIf="ticket.assignedTo">
+          <span class="label">Assigned To</span>
+          <span class="value">{{ ticket.assignedTo }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Submitted On</span>
+          <span class="value">{{ ticket.createdAt | date:"medium" }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Last Updated</span>
+          <span class="value">{{ ticket.updatedAt | date:"medium" }}</span>
+        </div>
+        <div class="info-section">
+          <span class="label">Description</span>
+          <p class="description-text">{{ ticket.description }}</p>
+        </div>
+      </mat-card>
+
+      <!-- Right: Dynamic fields -->
+      <mat-card class="info-card" *ngIf="ticket.fields && ticket.fields.length > 0">
+        <h4>Issue-Specific Details</h4>
+        <div class="info-row" *ngFor="let f of ticket.fields">
+          <span class="label">{{ f.fieldName }}</span>
+          <span class="value field-val">{{ f.fieldValue || "—" }}</span>
+        </div>
+      </mat-card>
+
+    </div> <!-- /info-grid -->
+
+    <!-- ─── Audit Timeline (Admin only) ──────────────── -->
+    <mat-card class="audit-card" *ngIf="isAdmin() && auditLogs.length > 0">
+      <h4>Activity Timeline</h4>
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let log of auditLogs">
+          <div class="timeline-dot"
+               [class.created]="log.action === 'CREATED'"
+               [class.changed]="log.action === 'STATUS_CHANGED'">
+          </div>
+          <div class="timeline-content">
+            <p class="tl-action">
+              <strong>{{ log.action === "CREATED" ? "Ticket Created" : "Status Changed" }}</strong>
+              <span *ngIf="log.oldStatus">
+                : {{ log.oldStatus }} → {{ log.newStatus }}
+              </span>
+            </p>
+            <p class="tl-meta">
+              By {{ log.performedBy }} &nbsp;·&nbsp;
+              {{ log.timestamp | date:"medium" }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+  </div> <!-- /!loading -->
+
+  <!-- Ticket not found -->
+  <div *ngIf="!loading && !ticket" class="not-found">
+    <mat-icon>search_off</mat-icon>
+    <p>Ticket not found or you do not have access to view it.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+  </div>
+
+</div>

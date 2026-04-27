@@ -1,0 +1,19 @@
+<div class="ih-layout"><app-header></app-header>
+<div class="ih-content">
+  <h2>My Tickets</h2>
+  <div *ngIf="loading" class="center"><mat-spinner></mat-spinner></div>
+  <div class="ticket-list" *ngIf="!loading">
+    <mat-card *ngFor="let t of tickets" class="ticket-card">
+      <div class="ticket-header">
+        <strong>{{ t.ticketNumber }}</strong>
+        <app-status-badge [status]="t.status"></app-status-badge>
+      </div>
+      
+      <h4>{{ t.issueType }}</h4>
+      <p>{{ t.departmentName }}</p>
+      <p class="desc">{{ t.description }}</p>
+      <small>Raised: {{ t.createdAt | date:"medium" }}</small>
+    </mat-card>
+    <p *ngIf="tickets.length === 0">You have not raised any tickets yet.</p>
+  </div>
+</div></div>
